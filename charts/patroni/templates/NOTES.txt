@@ -1,16 +1,25 @@
-1. Get the application URL by running these commands:
-{{- if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "patroni.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "patroni.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "patroni.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo http://$SERVICE_IP:{{ .Values.service.port }}
-{{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "patroni.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
-{{- end }}
+Patroni can be accessed via port 5432 on the following DNS name from within your cluster:
+{{ template "patroni.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To get your password for superuser run:
+
+    # superuser password
+    PGPASSWORD_SUPERUSER=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "patroni.fullname" . }} -o jsonpath="{.data.password-superuser}" | base64 --decode)
+
+    # admin password
+    PGPASSWORD_ADMIN=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "patroni.fullname" . }} -o jsonpath="{.data.password-admin}" | base64 --decode)
+
+To connect to your database:
+
+1. Run a postgres pod and connect using the psql cli:
+    # login as superuser
+    kubectl run -i --tty --rm psql --image=postgres \
+      --env "PGPASSWORD=$PGPASSWORD_SUPERUSER" \
+      --command -- psql -U postgres \
+      -h {{ template "patroni.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
+
+    # login as admin
+    kubectl run -i -tty --rm psql --image=postgres \
+      --env "PGPASSWORD=$PGPASSWORD_ADMIN" \
+      --command -- psql -U admin \
+      -h {{ template "patroni.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
