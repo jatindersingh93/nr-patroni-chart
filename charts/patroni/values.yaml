@@ -8,7 +8,7 @@ image:
   name: patroni-postgres
   tag: ~
 imagePullSecrets:
-  - name: artifacts-pull-pipeline-hzrybi
+  - name: artifacts-pull-pipeline-lkdvpc
 nameOverride: ~
 fullnameOverride: ~
 
