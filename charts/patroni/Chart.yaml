@@ -19,11 +19,11 @@ keywords:
   - patroni
   - postgresql
   - database
-home: https://timcsaky.github.io/nr-patroni-chart
+home: https://jatindersingh93.github.io/nr-patroni-chart
 sources:
   - https://github.com/zalando/patroni
   - https://github.com/zalando/spilo
-  - https://github.com/TimCsaky/nr-patroni-chart
+  - https://github.com/jatindersingh93/nr-patroni-chart
 dependencies:
   - name: etcd
     version: 0.6.2
