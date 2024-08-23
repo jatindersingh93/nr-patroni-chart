@@ -45,6 +45,6 @@ maintainers:
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes. This should match the intended image tag.
-appVersion: 2.1-p2
+appVersion: 3.0-15
 deprecated: false
 annotations: {}
