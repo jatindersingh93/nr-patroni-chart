@@ -1,3 +1,12 @@
-dependencies: []
-digest: sha256:643d5437104296e21d906ecb15b2c96ad278f20cfc4af53b12bb6069bd853726
-generated: "2024-08-29T13:56:11.225658-07:00"
+dependencies:
+- name: etcd
+  repository: https://charts.helm.sh/incubator
+  version: 0.6.2
+- name: zookeeper
+  repository: https://charts.helm.sh/incubator
+  version: 1.0.0
+- name: consul
+  repository: https://charts.helm.sh/stable
+  version: 3.6.1
+digest: sha256:f9ef1101460c219c9cef3c44b360d1c9d4b206f56eaa95fae98f95ca76a92781
+generated: "2024-08-29T14:42:14.328829-07:00"
