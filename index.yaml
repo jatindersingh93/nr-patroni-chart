@@ -3,11 +3,53 @@ entries:
   patroni:
   - apiVersion: v2
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     appVersion: 2.1-p2
     created: "2024-08-21T17:31:45.701004-07:00"
 =======
     appVersion: 3.0-15
     created: "2024-08-23T15:02:46.734929-07:00"
+=======
+    appVersion: 4.0.0
+    created: "2024-08-29T13:57:43.100569-07:00"
+    dependencies:
+    - condition: etcd.deployChart
+      name: etcd
+      repository: https://charts.helm.sh/incubator
+      version: 0.6.2
+    - condition: zookeeper.deployChart
+      name: zookeeper
+      repository: https://charts.helm.sh/incubator
+      version: 1.0.0
+    - condition: consul.deployChart
+      name: consul
+      repository: https://charts.helm.sh/stable
+      version: 3.6.1
+    description: Helm chart for a Patroni Postgresql database cluster
+    digest: cd3e72640c493639ad59543672dc8c562474aeeb0bb20c47b27163638762c843
+    home: https://jatindersingh93.github.io/nr-patroni-chart
+    keywords:
+    - patroni
+    - postgresql
+    - database
+    kubeVersion: '>= 1.13.0'
+    maintainers:
+    - email: NR.CommonServiceShowcase@gov.bc.ca
+      name: NR Common Service Showcase Team
+      url: https://bcgov.github.io/common-service-showcase/team.html
+    name: patroni
+    sources:
+    - https://github.com/zalando/patroni
+    - https://github.com/zalando/spilo
+    - https://github.com/jatindersingh93/nr-patroni-chart
+    type: application
+    urls:
+    - patroni-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 3.0-15
+    created: "2024-08-29T13:57:43.098751-07:00"
+>>>>>>> Stashed changes
     dependencies:
     - condition: etcd.deployChart
       name: etcd
@@ -81,7 +123,11 @@ entries:
     - patroni-0.0.1.tgz
     version: 0.0.1
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 generated: "2024-08-21T17:31:45.699084-07:00"
 =======
 generated: "2024-08-23T15:02:46.731828-07:00"
+>>>>>>> Stashed changes
+=======
+generated: "2024-08-29T13:57:43.094888-07:00"
 >>>>>>> Stashed changes
