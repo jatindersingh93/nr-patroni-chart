@@ -52,75 +52,75 @@ consul:
   hosts:
 
 # Extra custom environment variables.
- env:
-    - name: APP_DATABASE
-      valueFrom:
-        secretKeyRef:
-          key: app-db-name
-          name: "${NAME}-${INSTANCE}-secret"
-    - name: APP_USER
-      valueFrom:
-        secretKeyRef:
-          key: app-db-username
-          name: "${NAME}-${INSTANCE}-secret"
-    - name: APP_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          key: app-db-password
-          name: "${NAME}-${INSTANCE}-secret"
-    - name: POD_IP
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: status.podIP
-    - name: PATRONI_KUBERNETES_LABELS
-      value: '{"cluster-name": "${INSTANCE}", "app.kubernetes.io/name": "patroni"}'
-    - name: PATRONI_KUBERNETES_NAMESPACE
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: metadata.namespace
-    - name: PATRONI_SUPERUSER_USERNAME
-      valueFrom:
-        secretKeyRef:
-          key: superuser-username
-          name: "${NAME}-${INSTANCE}-secret"
-    - name: PATRONI_SUPERUSER_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          key: superuser-password
-          name: "${NAME}-${INSTANCE}-secret"
-    - name: PATRONI_REPLICATION_USERNAME
-      valueFrom:
-        secretKeyRef:
-          key: replication-username
-          name: "${NAME}-${INSTANCE}-secret"
-    - name: PATRONI_REPLICATION_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          key: replication-password
-          name: "${NAME}-${INSTANCE}-secret"
-    - name: PATRONI_LOG_LEVEL
-      value: WARNING
-    - name: PATRONI_NAME
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: metadata.name
-    - name: PATRONI_POSTGRESQL_DATA_DIR
-      value: "/home/postgres/pgdata/pgroot/data"
-    - name: PATRONI_POSTGRESQL_PGPASS
-      value: "/tmp/pgpass"
-    - name: PATRONI_POSTGRESQL_LISTEN
-      value: 0.0.0.0:5432
-    - name: PATRONI_RESTAPI_LISTEN
-      value: 0.0.0.0:8008
-    - name: PATRONI_SCOPE
-      value: "${INSTANCE}"
-    - name: POSTGRESQL_MAX_CONNECTIONS
-      value: "500"
-    - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
-      value: "500"
+env:
+  - name: APP_DATABASE
+    valueFrom:
+      secretKeyRef:
+        key: app-db-name
+        name: "${NAME}-${INSTANCE}-secret"
+  - name: APP_USER
+    valueFrom:
+      secretKeyRef:
+        key: app-db-username
+        name: "${NAME}-${INSTANCE}-secret"
+  - name: APP_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: app-db-password
+        name: "${NAME}-${INSTANCE}-secret"
+  - name: POD_IP
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: status.podIP
+  - name: PATRONI_KUBERNETES_LABELS
+    value: '{"cluster-name": "${INSTANCE}", "app.kubernetes.io/name": "patroni"}'
+  - name: PATRONI_KUBERNETES_NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  - name: PATRONI_SUPERUSER_USERNAME
+    valueFrom:
+      secretKeyRef:
+        key: superuser-username
+        name: "${NAME}-${INSTANCE}-secret"
+  - name: PATRONI_SUPERUSER_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: superuser-password
+        name: "${NAME}-${INSTANCE}-secret"
+  - name: PATRONI_REPLICATION_USERNAME
+    valueFrom:
+      secretKeyRef:
+        key: replication-username
+        name: "${NAME}-${INSTANCE}-secret"
+  - name: PATRONI_REPLICATION_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: replication-password
+        name: "${NAME}-${INSTANCE}-secret"
+  - name: PATRONI_LOG_LEVEL
+    value: WARNING
+  - name: PATRONI_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
+  - name: PATRONI_POSTGRESQL_DATA_DIR
+    value: "/home/postgres/pgdata/pgroot/data"
+  - name: PATRONI_POSTGRESQL_PGPASS
+    value: "/tmp/pgpass"
+  - name: PATRONI_POSTGRESQL_LISTEN
+    value: 0.0.0.0:5432
+  - name: PATRONI_RESTAPI_LISTEN
+    value: 0.0.0.0:8008
+  - name: PATRONI_SCOPE
+    value: "${INSTANCE}"
+  - name: POSTGRESQL_MAX_CONNECTIONS
+    value: "500"
+  - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
+    value: "500"
 
 walE:
   # Specifies whether Wal-E should be enabled
