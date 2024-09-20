@@ -31,74 +31,173 @@ spec:
         image: "{{ .Values.image.repository }}/{{ .Values.image.name | default .Chart.Name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
-          - name: APP_DATABASE
+          - name: PGPASSWORD_SUPERUSER
             valueFrom:
               secretKeyRef:
-                key: app-db-name
-                name: {{ $secretName }}
-          - name: APP_USER
+                name: {{ template "patroni.fullname" . }}
+                key: password-superuser
+          - name: PGPASSWORD_ADMIN
             valueFrom:
               secretKeyRef:
-                key: app-db-username
-                name: {{ $secretName }}
-          - name: APP_PASSWORD
+                name: {{ template "patroni.fullname" . }}
+                key: password-admin
+          - name: PGPASSWORD_STANDBY
             valueFrom:
               secretKeyRef:
-                key: app-db-password
-                name: {{ $secretName }}
-          - name: POD_IP
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: status.podIP
-          - name: PATRONI_KUBERNETES_LABELS
-            value: {{ include "patroni.selectorLabels" . | fromYaml | toJson | squote }}
-          - name: PATRONI_KUBERNETES_NAMESPACE
+                name: {{ template "patroni.fullname" . }}
+                key: password-standby
+          {{- if .Values.kubernetes.dcs.enable }}
+          - name: DCS_ENABLE_KUBERNETES_API
+            value: "true"
+          - name: KUBERNETES_LABELS
+            value: {{ (printf "{ \"app\": \"%s\", \"release\": \"%s\" }" (include "patroni.fullname" .) .Release.Name) | quote }}
+          - name: KUBERNETES_SCOPE_LABEL
+            value: "app"
+          {{- if .Values.kubernetes.configmaps.enable }}
+          - name: KUBERNETES_USE_CONFIGMAPS
+            value: "true"
+          {{- end }}
+          {{- end }}
+          {{- if .Values.etcd.enable }}
+          {{- if .Values.etcd.deployChart }}
+          - name: ETCD_DISCOVERY_DOMAIN
+            value: {{default (printf "%s-etcd" .Release.Name | trunc 63) .Values.etcd.discovery }}
+          {{- else }}
+          - name: ETCD_HOST
+            value: {{ .Values.etcd.host | quote }}
+          {{- end }}
+          {{- else if .Values.zookeeper.enable }}
+          {{- if .Values.zookeeper.deployChart }}
+          - name: ZOOKEEPER_HOSTS
+            value: {{(printf "'%s-zookeeper-headless:2181'" .Release.Name | trunc 63)}}
+          {{- else }}
+          - name: ZOOKEEPER_HOSTS
+            value: {{ .Values.zookeeper.hosts | quote }}
+          {{- end }}
+          {{- else if .Values.consul.enable }}
+          {{- if .Values.consul.deployChart }}
+          - name: PATRONI_CONSUL_HOST
+            value: {{(printf "'%s-consul'" .Release.Name | trunc 63)}}
+          {{- else }}
+          - name: PATRONI_CONSUL_HOST
+            value: {{ .Values.consul.host | quote }}
+          {{- end }}
+          {{- end }}
+          - name: SCOPE
+            value: {{ template "patroni.fullname" . }}
+          {{- if .Values.walE.enable }}
+          - name: USE_WALG
+            value: {{ .Values.walE.enable | quote }}
+          {{- if .Values.walE.scheduleCronJob }}
+          - name: BACKUP_SCHEDULE
+            value: {{ .Values.walE.scheduleCronJob | quote}}
+          {{- end }}
+          {{- if .Values.walE.retainBackups }}
+          - name: BACKUP_NUM_TO_RETAIN
+            value: {{ .Values.walE.retainBackups | quote}}
+          {{- end }}
+          {{- if .Values.walE.s3Bucket }}
+          - name: WAL_S3_BUCKET
+            value: {{ .Values.walE.s3Bucket | quote }}
+          {{else if .Values.walE.gcsBucket }}
+          - name: WAL_GS_BUCKET
+            value: {{ .Values.walE.gcsBucket | quote }}
+          - name: WALE_GS_PREFIX
+            value: gs://{{ .Values.walE.gcsBucket }}/{{ .Values.walE.gcsBucketBackupLocation }}
+          {{- if .Values.walE.kubernetesSecret }}
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: "/etc/credentials/credentials.json"
+          {{- end }}
+          {{- end }}
+          {{- if .Values.walE.backupThresholdMegabytes }}
+          - name: WALE_BACKUP_THRESHOLD_MEGABYTES
+            value: {{ .Values.walE.backupThresholdMegabytes | quote }}
+          {{- end }}
+          {{- if .Values.walE.backupThresholdPercentage }}
+          - name: WALE_BACKUP_THRESHOLD_PERCENTAGE
+            value: {{ .Values.walE.backupThresholdPercentage | quote }}
+          {{- end }}
+          {{- else }}
+          - name: USE_WALE
+            value: ""
+          {{- end }}
+          - name: PGROOT
+            value: "{{ .Values.persistentVolume.mountPath }}/pgroot"
+          - name: POD_NAMESPACE
             valueFrom:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.namespace
-          - name: PATRONI_SUPERUSER_USERNAME
+          {{- if .Values.env }}
+          {{- range $key, $val := .Values.env }}
+          - name: {{  $key | quote | upper }}
+            value: {{ $val | quote }}
+          {{- end }}
+          {{- end }}
+          - name: APP_DATABASE
             valueFrom:
               secretKeyRef:
-                key: superuser-username
-                name: {{ $secretName }}
-          - name: PATRONI_SUPERUSER_PASSWORD
+                key: app-db-name
+                name: 'patroni-master-secret'
+          - name: APP_USER
             valueFrom:
               secretKeyRef:
-                key: superuser-password
-                name: {{ $secretName }}
-          - name: PATRONI_REPLICATION_USERNAME
+                key: app-db-username
+                name: 'patroni-master-secret'
+          - name: APP_PASSWORD
             valueFrom:
               secretKeyRef:
-                key: replication-username
-                name: {{ $secretName }}
-          - name: PATRONI_REPLICATION_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: replication-password
-                name: {{ $secretName }}
-          - name: PATRONI_LOG_LEVEL
-            value: WARNING
-          - name: PATRONI_NAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.name
-          - name: PATRONI_POSTGRESQL_DATA_DIR
-            value: "{{ .Values.persistentVolume.mountPath }}/pgroot/data"
-          - name: PATRONI_POSTGRESQL_PGPASS
-            value: "/tmp/pgpass"
-          - name: PATRONI_POSTGRESQL_LISTEN
-            value: 0.0.0.0:5432
-          - name: PATRONI_RESTAPI_LISTEN
-            value: 0.0.0.0:8008
-          - name: PATRONI_SCOPE
-            value: {{ .Release.Name }}
-          - name: POSTGRESQL_MAX_CONNECTIONS
-            value: "500"
-          - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
-            value: "500"
+                key: app-db-password
+                name: 'patroni-master-secret'
+          # - name: POD_IP
+          #   valueFrom:
+          #     fieldRef:
+          #       apiVersion: v1
+          #       fieldPath: status.podIP
+          # - name: PATRONI_KUBERNETES_NAMESPACE
+          #   valueFrom:
+          #     fieldRef:
+          #       apiVersion: v1
+          #       fieldPath: metadata.namespace
+          # - name: PATRONI_SUPERUSER_USERNAME
+          #   valueFrom:
+          #     secretKeyRef:
+          #       key: superuser-username
+          #       name: 'patroni-master-secret'
+          # - name: PATRONI_SUPERUSER_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       key: superuser-password
+          #       name: 'patroni-master-secret'
+          # - name: PATRONI_REPLICATION_USERNAME
+          #   valueFrom:
+          #     secretKeyRef:
+          #       key: replication-username
+          #       name: 'patroni-master-secret'
+          # - name: PATRONI_REPLICATION_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       key: replication-password
+          #       name: 'patroni-master-secret'
+          # - name: PATRONI_LOG_LEVEL
+          #   value: WARNING
+          # - name: PATRONI_NAME
+          #   valueFrom:
+          #     fieldRef:
+          #       apiVersion: v1
+          #       fieldPath: metadata.name
+          # - name: PATRONI_POSTGRESQL_PGPASS
+          #   value: "/tmp/pgpass"
+          # - name: PATRONI_POSTGRESQL_LISTEN
+          #   value: 0.0.0.0:5432
+          # - name: PATRONI_RESTAPI_LISTEN
+          #   value: 0.0.0.0:8008
+          # - name: PATRONI_SCOPE
+          #   value: {{ .Release.Name }}
+          # - name: POSTGRESQL_MAX_CONNECTIONS
+          #   value: "500"
+          # - name: POSTGRESQL_MAX_PREPARED_TRANSACTIONS
+          #   value: "500"
         lifecycle:
           preStop:
             exec:
