@@ -35,17 +35,17 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: app-db-name
-                name: {{ $secretName }}
+                name: 'patroni-migrate'
           - name: APP_USER
             valueFrom:
               secretKeyRef:
                 key: app-db-username
-                name: {{ $secretName }}
+                name: 'patroni-migrate'
           - name: APP_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: app-db-password
-                name: {{ $secretName }}
+                name: 'patroni-migrate'
           - name: POD_IP
             valueFrom:
               fieldRef:
@@ -62,22 +62,22 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: superuser-username
-                name: {{ $secretName }}
+                name: 'patroni-migrate'
           - name: PATRONI_SUPERUSER_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: superuser-password
-                name: {{ $secretName }}
+                name: 'patroni-migrate'
           - name: PATRONI_REPLICATION_USERNAME
             valueFrom:
               secretKeyRef:
                 key: replication-username
-                name: {{ $secretName }}
+                name: 'patroni-migrate'
           - name: PATRONI_REPLICATION_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: replication-password
-                name: {{ $secretName }}
+                name: 'patroni-migrate'
           - name: PATRONI_LOG_LEVEL
             value: WARNING
           - name: PATRONI_NAME
