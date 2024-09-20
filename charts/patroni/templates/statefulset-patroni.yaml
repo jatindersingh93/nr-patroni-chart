@@ -35,24 +35,22 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: app-db-name
-                name: {{ $secretName }}
+                name: 'patroni-master-secret'
           - name: APP_USER
             valueFrom:
               secretKeyRef:
                 key: app-db-username
-                name: {{ $secretName }}
+                name: 'patroni-master-secret'
           - name: APP_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: app-db-password
-                name: {{ $secretName }}
+                name: 'patroni-master-secret'
           - name: POD_IP
             valueFrom:
               fieldRef:
                 apiVersion: v1
                 fieldPath: status.podIP
-          - name: PATRONI_KUBERNETES_LABELS
-            value: {{ include "patroni.selectorLabels" . | fromYaml | toJson | squote }}
           - name: PATRONI_KUBERNETES_NAMESPACE
             valueFrom:
               fieldRef:
@@ -62,22 +60,22 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: superuser-username
-                name: {{ $secretName }}
+                name: 'patroni-master-secret'
           - name: PATRONI_SUPERUSER_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: superuser-password
-                name: {{ $secretName }}
+                name: 'patroni-master-secret'
           - name: PATRONI_REPLICATION_USERNAME
             valueFrom:
               secretKeyRef:
                 key: replication-username
-                name: {{ $secretName }}
+                name: 'patroni-master-secret'
           - name: PATRONI_REPLICATION_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: replication-password
-                name: {{ $secretName }}
+                name: 'patroni-master-secret'
           - name: PATRONI_LOG_LEVEL
             value: WARNING
           - name: PATRONI_NAME
@@ -85,8 +83,6 @@ spec:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.name
-          - name: PATRONI_POSTGRESQL_DATA_DIR
-            value: "{{ .Values.persistentVolume.mountPath }}/pgroot/data"
           - name: PATRONI_POSTGRESQL_PGPASS
             value: "/tmp/pgpass"
           - name: PATRONI_POSTGRESQL_LISTEN
