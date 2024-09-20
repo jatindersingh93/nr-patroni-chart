@@ -3,7 +3,7 @@ entries:
   patroni:
   - apiVersion: v2
     appVersion: 3.3.2
-    created: "2024-09-20T11:26:38.92495-07:00"
+    created: "2024-09-20T12:13:20.244232-07:00"
     dependencies:
     - condition: etcd.deployChart
       name: etcd
@@ -18,7 +18,7 @@ entries:
       repository: https://charts.helm.sh/stable
       version: 3.6.1
     description: Helm chart for a Patroni Postgresql database cluster
-    digest: a040f26db85cdaae45a5978f4767154961ce962615c46913415bc7e724187a5f
+    digest: 7d2a15e2b37b21f0dad9346fabfe2aac7e354b15c3382cfbccd48c43ff071df6
     home: https://jatindersingh93.github.io/nr-patroni-chart
     keywords:
     - patroni
@@ -36,11 +36,11 @@ entries:
     - https://github.com/jatindersingh93/nr-patroni-chart
     type: application
     urls:
-    - patroni-0.0.8.tgz
-    version: 0.0.8
+    - patroni-0.0.9.tgz
+    version: 0.0.9
   - apiVersion: v2
     appVersion: 3.0-15
-    created: "2024-09-20T11:26:38.923208-07:00"
+    created: "2024-09-20T12:13:20.242477-07:00"
     dependencies:
     - condition: etcd.deployChart
       name: etcd
@@ -75,4 +75,4 @@ entries:
     urls:
     - patroni-0.0.1.tgz
     version: 0.0.1
-generated: "2024-09-20T11:26:38.920497-07:00"
+generated: "2024-09-20T12:13:20.239456-07:00"
