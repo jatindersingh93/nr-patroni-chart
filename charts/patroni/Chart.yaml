@@ -46,6 +46,6 @@ maintainers:
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes. This should match the intended image tag.
 # New Images
-appVersion: 3.3.2-1
+appVersion: 3.3.2
 deprecated: false
 annotations: {}
