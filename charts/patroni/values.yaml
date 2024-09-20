@@ -75,6 +75,18 @@ walE:
   # to consider WAL-E restore instead of pg_basebackup
   backupThresholdPercentage: 30
 
+postgresql:
+  pgHba:
+    - type: host
+      database: all
+      user: all
+      address: 0.0.0.0/0
+      authMethod: md5
+    - type: local
+      database: all
+      user: all
+      authMethod: trust
+
 persistentVolume:
   enabled: true
   size: 2Gi
