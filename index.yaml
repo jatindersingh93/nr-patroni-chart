@@ -3,6 +3,43 @@ entries:
   patroni:
   - apiVersion: v2
     appVersion: 3.3.2
+    created: "2024-09-20T23:20:53.641456561Z"
+    dependencies:
+    - condition: etcd.deployChart
+      name: etcd
+      repository: https://charts.helm.sh/incubator
+      version: 0.6.2
+    - condition: zookeeper.deployChart
+      name: zookeeper
+      repository: https://charts.helm.sh/incubator
+      version: 1.0.0
+    - condition: consul.deployChart
+      name: consul
+      repository: https://charts.helm.sh/stable
+      version: 3.6.1
+    description: Helm chart for a Patroni Postgresql database cluster
+    digest: 87ee384f6d81ee420e3d5fc09cf65bdf53dd3c903b2244435b8e9ed6d3360bef
+    home: https://jatindersingh93.github.io/nr-patroni-chart
+    keywords:
+    - patroni
+    - postgresql
+    - database
+    kubeVersion: '>= 1.13.0'
+    maintainers:
+    - email: NR.CommonServiceShowcase@gov.bc.ca
+      name: NR Common Service Showcase Team
+      url: https://bcgov.github.io/common-service-showcase/team.html
+    name: patroni
+    sources:
+    - https://github.com/zalando/patroni
+    - https://github.com/zalando/spilo
+    - https://github.com/jatindersingh93/nr-patroni-chart
+    type: application
+    urls:
+    - https://github.com/jatindersingh93/nr-patroni-chart/releases/download/patroni-0.0.15/patroni-0.0.15.tgz
+    version: 0.0.15
+  - apiVersion: v2
+    appVersion: 3.3.2
     created: "2024-09-20T23:15:52.952671728Z"
     dependencies:
     - condition: etcd.deployChart
@@ -149,4 +186,4 @@ entries:
     urls:
     - patroni-0.0.1.tgz
     version: 0.0.1
-generated: "2024-09-20T23:15:52.952690964Z"
+generated: "2024-09-20T23:20:53.641481618Z"
